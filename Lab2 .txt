@@ -1,0 +1,86 @@
+mysql -u root -p  
+
+CREATE DATABASE Company_23201039;
+
+USE Company_23201039; 
+
+CREATE TABLE Employee (
+employee_id char(10) ,
+first_name varchar(20) ,
+last_name varchar(20)  ,
+email varchar(60) ,
+phone_number char(14) ,
+hire_date date ,
+job_id char(10) ,
+salary int ,
+commission_pct decimal(5,3) ,
+manager_id char(10) , 
+department_id char(10) 
+);
+
+INSERT INTO Employee values 
+('EMP001', 'John', 'Doe', 'john.doe@company.com', '123-456-7890', '2020-01-15', 'JOB001', 45000, 0.100, 'MNG001', 'DPT001'),
+('EMP002', 'Jane', 'Smith', 'jane.smith@company.com', '123-456-7891', '2021-03-20', 'JOB002', 28000, 0.150, 'MNG001', 'DPT005'),
+('EMP003', 'Michael', 'Johnson', 'michael.j@company.com', '123-456-7892', '2019-06-10', 'JOB003', 52000, 0.200, 'MNG002', 'DPT007'),
+('EMP004', 'Emily', 'Davis', 'emily.davis@company.com', '123-456-7893', '2022-05-15', 'JOB001', 35000, 0.120, 'MNG001', 'DPT001'),
+('EMP005', 'Robert', 'Brown', 'robert.b@company.com', '123-456-7894', '2021-08-22', 'JOB004', 42000, 0.180, 'MNG002', 'DPT005'),
+('EMP006', 'Sarah', 'Wilson', 'sarah.w@company.com', '123-456-7895', '2023-02-10', 'JOB002', 25000, 0.080, 'MNG003', 'DPT007'),
+('EMP007', 'David', 'Martinez', 'david.m@company.com', '123-456-7896', '2020-11-30', 'JOB003', 48000, 0.220, 'MNG002', 'DPT003'),
+('EMP008', 'Lisa', 'Anderson', 'lisa.a@company.com', '123-456-7897', '2024-01-05', 'JOB001', 32000, 0.090, 'MNG001', 'DPT005'),
+('EMP009', 'James', 'Taylor', 'james.t@company.com', '123-456-7898', '2024-01-05', 'JOB005', 29000, 0.110, 'MNG003', 'DPT007'),
+('EMP010', 'Patricia', 'Thomas', 'patricia.t@company.com', '123-456-7899', '2022-09-18', 'JOB002', 27000, 0.140, 'MNG003', 'DPT002'),
+('EMP011', 'William', 'Moore', 'william.m@company.com', '123-456-7800', '2021-04-25', 'JOB004', 38000, 0.160, 'MNG002', 'DPT005'),
+('EMP012', 'Jennifer', 'Lee', 'jennifer.l@company.com', '123-456-7801', '2023-07-12', 'JOB001', 26000, 0.070, 'MNG001', 'DPT002');
+
+SELECT * FROM Employee;
+
+SELECT first_name, last_name, email, phone_number, hire_date, department_id
+FROM Employee
+WHERE hire_date = (SELECT MAX(hire_date) FROM Employee);
+
+SELECT first_name, last_name, employee_id, phone_number, salary, department_id
+FROM Employee
+WHERE (department_id, salary) IN (
+  SELECT department_id, MIN(salary)
+  FROM Employee
+  GROUP BY department_id
+);
+
+
+SELECT first_name, last_name, employee_id, commission_pct, department_id
+FROM Employee
+WHERE department_id = 'DPT007'
+AND commission_pct < ALL (
+  SELECT commission_pct
+  FROM Employee
+  WHERE department_id = 'DPT005'
+);
+
+SELECT department_id, COUNT(*) AS total_employees
+FROM Employee
+GROUP BY department_id
+HAVING MAX(salary) <= 30000;
+
+SELECT e.department_id, e.job_id, e.commission_pct
+FROM Employee e
+WHERE e.commission_pct < (
+    SELECT MAX(e2.commission_pct)
+    FROM Employee e2
+    WHERE e2.department_id = e.department_id
+);
+
+
+SELECT manager_id
+FROM Employee
+GROUP BY manager_id
+HAVING MIN(salary) >= 3500;
+
+
+SELECT e.first_name, e.last_name, e.employee_id, e.email, e.salary, e.department_id, e.commission_pct
+FROM Employee e
+WHERE e.commission_pct = (
+  SELECT MIN(e2.commission_pct)
+  FROM Employee e2
+  WHERE e2.manager_id = e.manager_id
+);
+

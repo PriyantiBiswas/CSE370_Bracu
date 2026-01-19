@@ -1,0 +1,58 @@
+mysql -u root -p  
+
+CREATE DATABASE Google_23201039;
+
+USE Google_23201039;
+
+CREATE TABLE Developers(
+member_id INT,
+name varchar(40),
+email varchar(60),
+influence_count INT,
+joining_date DATE,
+multiplier INT
+); 
+
+
+INSERT INTO Developers VALUES
+(1, 'Taylor Otwell', 'otwell@laravel.com', 739360, '2020-06-10', 10),
+(2, 'Ryan Dahl', 'ryan@nodejs.org', 633632, '2020-04-22', 10),
+(3, 'Brendan Eich', 'eich@javascript.com', 939570, '2020-05-07', 8),
+(4, 'Evan You', 'you@vuejs.org', 982630, '2020-06-11', 7),
+(5, 'Rasmus Lerdorf', 'lerdorf@php.net', 937927, '2020-06-03', 8),
+(6, 'Guido van Rossum', 'guido@python.org', 968827, '2020-07-18', 19),
+(7, 'Adrian Holovaty', 'adrian@djangoproject.com', 570724, '2020-05-07', 5),
+(8, 'Simon Willison', 'simon@djangoproject.com', 864615, '2020-04-30', 4),
+(9, 'James Gosling', 'james@java.com', 719491, '2020-05-18', 5),
+(10, 'Rod Johnson', 'rod@spring.io', 601744, '2020-05-18', 7),
+(11, 'Satoshi Nakamoto', 'nakamoto@blockchain.com', 630488, '2020-05-10', 10);
+
+SELECT * FROM Developers;
+
+ALTER TABLE Developers CHANGE influence_count followers INT;
+
+SELECT * FROM Developers;
+
+
+UPDATE Developers
+SET followers = followers + 10;
+
+
+SELECT followers from Developers;
+
+
+
+SELECT name,
+  ((followers * 100 / 1000000) * (multiplier * 100 / 20)) / 100 AS Efficiency
+FROM Developers;
+
+SELECT UPPER(name) AS Name, joining_date
+FROM Developers
+ORDER BY joining_date DESC;
+
+
+SELECT member_id, name, email, followers
+FROM Developers
+WHERE email LIKE '%.com%' OR email LIKE '%.net%';
+
+
